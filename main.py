@@ -2,7 +2,7 @@ from flask import Flask, request, jsonify,render_template
 import openai
 openai.api_key = "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"
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder='static')
 
 messages = [
     {"role": "system", "content": "You are a kind helpful assistant."},
