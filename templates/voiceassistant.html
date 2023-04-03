@@ -1,92 +1,26 @@
 <!DOCTYPE html>
-<html>
-
+<html lang="en">
 <head>
     <meta charset="utf-8">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css') }}">
     <title>Voice Assistant</title>
-    <style>
-        button {
-            padding: 15px;
-            font-size: 20px;
-            border-radius: 10px;
-            border: none;
-            outline: none;
-            cursor: pointer;
-        }
-
-        .active {
-            border: 3px solid green;
-        }
-
-        #output {
-            margin-top: 20px;
-            font-size: 20px;
-        }
-    </style>
 </head>
 
 <body>
+    <section id="entirety">
     <h1>Voice Assistant</h1>
+    <p>Currently Only Available for Chrome users<p>
     <button id="recordBtn" onclick="toggleRecording()">Record</button>
-    <p id="status"></p>
-    <p id="output"></p>
-    <p id="result"></p>
+    <div class="container">
+        <p id="status"></p>
+        <div class="texts">
+            <p id="output"></p>
+            <p id="result"></p>
+        </div>
+    </div>
+    </section>
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
 
-    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@3.3.0/dist/tf.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/universal-sentence-encoder@4.0.0/dist/universal-sentence-encoder.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/deeplab@2.0.0/dist/deeplab.min.js"
-        integrity="sha384-7al1FcC0Q+by7P5Z5b5Z/n85ODHxP5V7gjiKfEnaVXmkRf+1J50Z/kYt/tGgjZ+u"
-        crossorigin="anonymous"></script>
-
-    <script>
-        let toggled = false;
-        const recordBtn = document.getElementById("recordBtn");
-        const output = document.getElementById("output");
-        const status = document.getElementById("status");
-        const result = document.getElementById("result");
-
-        function toggleRecording() {
-            toggled = !toggled;
-            if(toggled){
-            const recognition = new window.webkitSpeechRecognition();
-            recognition.interimResults = true;
-            recognition.continuous = true;
-            recognition.onstart = () => {
-                recordBtn.classList.add("active");
-                output.innerText = "";
-                status.innerText = "Listening...";
-            };
-            recognition.onerror = event => {
-                status.innerText = "Error occurred in recognition: " + event.error;
-            };
-            recognition.onresult = event => {
-                const interimTranscript = event.results[0][0].transcript;
-                output.innerText = interimTranscript;
-            };
-            recognition.start();
-
-
-            }    else{
-                recordBtn.classList.remove("active");
-                status.innerText = "Stopping Listen";
-                processInput(output.innerText);
-                }
-        }
-
-        async function processInput(input) {
-            const response = await fetch("/process-input", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
-                    "input": input
-                })
-            });
-            const data = await response.json();
-            result.innerText = data.response;
-        }
-    </script>
 </body>
 
 </html>
